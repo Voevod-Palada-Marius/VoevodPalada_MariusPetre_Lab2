@@ -1,14 +1,49 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Windows.Threading
+using System.Windows.Threading;
+using System.Windows.Input;
+using System.ComponentModel;
+using System.Configuration;
 
 
-namespace VoevodPalada_MariusPetre_Lab2
+
+namespace VoevodPalada_MariusPetre_Lab2.CustomCommands
 {
+    class StopCommand
+    {
+        private static RoutedUICommand launch_command;
+        static StopCommand()
+        {
+            InputGestureCollection myInputGestures = new InputGestureCollection();
+            myInputGestures.Add(new KeyGesture(Key.S, ModifierKeys.Control));
+            launch_command = new RoutedUICommand("Launch", "Launch",
+           typeof(StopCommand),
+            myInputGestures);
+        }
+        public static RoutedUICommand Launch
+        {
+            get
+            {
+                return launch_command;
+            }
+        }
+    }
+
     class PizzaMachine : Component
 
     {
+
+        enum PizzaType
+        {
+            Margherita,
+            Pepperoni,
+            Veggie,
+            Quattro_Stagioni,
+            Canibale
+        }
+        public delegate void PizzaCompleteDelegate();
+        public event PizzaCompleteDelegate PizzaComplete;
         DispatcherTimer pizzaBakeTimer;
         public delegate void DoughnutCompleteDelegate();
         public event DoughnutCompleteDelegate DoughnutComplete;
@@ -17,18 +52,8 @@ namespace VoevodPalada_MariusPetre_Lab2
             InitializeComponent();
         }
 
-        private PizzaType mIngredients;
-        public PizzaType Ingredients
-        {
-            get
-            {
-                return mIngredients;
-            }
-            set
-            {
-                mIngredients = value;
-            }
-        }
+        
+       
 
         private System.Collections.ArrayList mPizzas = new System.Collections.ArrayList();
         public Pizza this[int Index]
@@ -74,32 +99,39 @@ namespace VoevodPalada_MariusPetre_Lab2
            
 
 
-    {
- case PizzaType.Canibale: Interval = 3; break;
- case PizzaType.Margherita: Interval = 2; break;
- case PizzaType.Pepperoni: Interval = 5; break;
- case PizzaType.Quattro_Stagioni: Interval = 7; break;
- case PizzaType.Veggie: Interval = 4; break;
+            {
+                case PizzaType.Canibale: Interval = 3; break;
+                case PizzaType.Margherita: Interval = 2; break;
+                case PizzaType.Pepperoni: Interval = 5; break;
+                case PizzaType.Quattro_Stagioni: Interval = 7; break;
+                case PizzaType.Veggie: Interval = 4; break;
             }
             pizzaBakeTimer.Start();
         }
 
-
-
-       
-        
-    
-
-        enum PizzaType
+        private PizzaType mIngredients;
+        public PizzaType Ingredients
         {
-            Margherita,
-            Pepperoni,
-            Veggie,
-            Quattro_Stagioni,
-            Canibale
+            get
+            {
+                return mIngredients;
+            }
+            set
+            {
+                mIngredients = value;
+            }
         }
+
+
+
+
+
+
         class Pizza
         {
+
+         
+
             private PizzaType mIngredients; // câmp
             public PizzaType Ingredients // proprietate
             {
